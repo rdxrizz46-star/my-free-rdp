@@ -6,8 +6,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Creating RDP Environment
-      uses: vishalvshekkar/ubuntu-rdp@main
-      with:
-        ngrok_auth_token: ${{ secrets.NGROK_AUTH_TOKEN }}
-        rdp_password: 'Password123'
+    - name: Installing Desktop Environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xfce4 xfce4-goodies xrdp
+    - name: Setting Up Ngrok Tunneling
+      run: |
+        wget -q https://bin.equinox.io/c/b34239c/ngrok-v3-stable-linux-amd64.tgz
+        tar -xf ngrok-v3-stable-linux-amd64.tgz
+        chmod +x ngrok
+        ./ngrok config add-authtoken ${{ secrets.NGROK_AUTH_TOKEN }}
+    - name: Configuring User and Starting RDP
+      run: |
+        sudo echo "ubuntu:Password123" | sudo chpasswd
+        sudo systemctl enable xrdp
+        sudo systemctl start xrdp
+        ./ngrok tcp 3389
