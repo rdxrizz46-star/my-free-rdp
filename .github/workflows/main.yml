@@ -1,4 +1,4 @@
-name: Free RDP
+name: Free RDP Setup
 
 on: workflow_dispatch
 
@@ -6,6 +6,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Setting Up RDP
-      run: |
-        wget -qO- https://raw.githubusercontent.com/afnan007a/Free-RDP/main/ubuntu-rdp.sh | bash -s -- --token ${{ secrets.NGROK_AUTH_TOKEN }}
+    - name: Creating RDP Environment
+      uses: vishalvshekkar/ubuntu-rdp@main
+      with:
+        ngrok_auth_token: ${{ secrets.NGROK_AUTH_TOKEN }}
+        rdp_password: 'Password123'
